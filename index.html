@@ -53,7 +53,7 @@
     right: 0;
     z-index: 100;
     padding: 16px 24px;
-    background: rgba(11,8,7,0.85);
+    background: rgba(11,8,7,0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(201,168,76,0.1);
@@ -70,21 +70,28 @@
     text-transform: uppercase;
   }
 
-  nav .nav-cta {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 8px 18px;
-    border-radius: 3px;
-    background: var(--gold);
-    color: var(--ink);
-    text-decoration: none;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: opacity 0.2s;
+  .nav-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  nav .nav-cta:hover { opacity: 0.85; }
+  .timer-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--smoke);
+  }
+
+  .timer-countdown {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #FF3D3D;
+  }
 
   /* ── Hero ── */
   .hero {
@@ -185,7 +192,7 @@
     border-radius: 2px;
   }
 
-  /* ── Pain Section ── */
+  /* ── Diagnóstico Interativo ── */
   .pain {
     padding: 80px 0;
     background: linear-gradient(180deg, var(--ink) 0%, var(--wine-deep) 40%, var(--wine-deep) 60%, var(--ink) 100%);
@@ -207,37 +214,157 @@
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -1px;
-    margin-bottom: 36px;
+    margin-bottom: 12px;
   }
 
-  .pain-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  .quiz-subtitle {
+    font-size: 16px;
+    color: var(--smoke);
+    margin-bottom: 32px;
+    font-style: italic;
   }
 
-  .pain-item {
+  .quiz-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .quiz-list { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 400px) {
+    .quiz-list { grid-template-columns: 1fr; }
+  }
+
+  .quiz-item {
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 20px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 16px;
     background: var(--charcoal);
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid rgba(201,168,76,0.1);
-    box-shadow: 0 2px 16px rgba(201,168,76,0.03);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 80px;
   }
 
-  .pain-icon {
+  .quiz-item:hover {
+    border-color: rgba(201,168,76,0.25);
+  }
+
+  .quiz-item.active {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .quiz-check {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    margin-top: 2px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(201,168,76,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .quiz-item.active .quiz-check {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+
+  .quiz-item.active .quiz-check::after {
+    content: '✓';
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .quiz-item p {
+    font-size: 14px;
+    color: rgba(242,237,232,0.85);
+    margin: 0;
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  .quiz-counter {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--smoke);
+  }
+
+  .quiz-counter strong {
     color: var(--gold);
   }
 
-  .pain-item p {
+  .quiz-hint {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--smoke);
+    font-style: italic;
+  }
+
+  .quiz-result {
+    margin-top: 32px;
+    padding: 32px;
+    background: var(--charcoal);
+    border-radius: 12px;
+    border: 1px solid rgba(201,168,76,0.2);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.06);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s, transform 0.6s;
+    pointer-events: none;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 32px;
+    margin-top: 0;
+  }
+
+  .quiz-result.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    max-height: 500px;
+    padding: 32px;
+    margin-top: 32px;
+  }
+
+  .quiz-result h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .quiz-result p {
     font-size: 16px;
     color: rgba(242,237,232,0.85);
+    line-height: 1.7;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .quiz-result p:last-child {
+    margin-bottom: 0;
+  }
+
+  .quiz-result p strong {
+    color: var(--paper);
   }
 
   /* ── Marquee ── */
@@ -335,11 +462,63 @@
     pointer-events: none;
   }
 
+  /* ── Art Diferencial ── */
+  .art-diferencial {
+    padding: 40px 0;
+    background: #000000;
+  }
+
+  .art-diferencial-img {
+    max-width: 480px;
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+  }
+
   /* ── AI Section ── */
   .ai-section {
     padding: 80px 0;
     text-align: center;
-    background: radial-gradient(ellipse at center top, rgba(201,168,76,0.06) 0%, transparent 60%);
+    background: linear-gradient(180deg, #000000 0%, var(--charcoal) 30%, var(--charcoal) 70%, var(--ink) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 45%, rgba(242,237,232,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 8%, rgba(201,168,76,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 70%, rgba(242,237,232,0.12) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 25%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 55%, rgba(242,237,232,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 80%, rgba(201,168,76,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 10%, rgba(242,237,232,0.1) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 35%, rgba(201,168,76,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(242,237,232,0.12) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 90%, rgba(201,168,76,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 50%, rgba(242,237,232,0.1) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 42%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 88%, rgba(242,237,232,0.13) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 30%, rgba(201,168,76,0.17) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 60% 12%, rgba(201,168,76,0.35) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 75%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 82% 68%, rgba(242,237,232,0.1) 0%, transparent 100%),
+      radial-gradient(1px 1px at 8% 92%, rgba(201,168,76,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 38%, rgba(242,237,232,0.12) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ai-section .container {
+    position: relative;
+    z-index: 1;
   }
 
   .ai-section h2 {
@@ -379,9 +558,21 @@
   }
 
   .ai-card-icon {
-    font-size: 28px;
-    margin-bottom: 12px;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid rgba(201,168,76,0.25);
+    background: rgba(201,168,76,0.08);
+    margin-bottom: 14px;
+    color: var(--gold);
+  }
+
+  .ai-card-icon svg {
+    width: 22px;
+    height: 22px;
   }
 
   .ai-card h3 {
@@ -404,36 +595,43 @@
   }
 
   .manifesto p {
-    font-size: 18px;
-    line-height: 1.75;
-    color: rgba(242,237,232,0.8);
-    margin-bottom: 20px;
-    max-width: 560px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.9;
+    color: rgba(242,237,232,0.65);
+    margin-bottom: 14px;
+    max-width: 500px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    letter-spacing: 0.3px;
   }
 
   .manifesto p strong {
     color: var(--paper);
+    font-weight: 600;
   }
 
   .manifesto-punch {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 24px !important;
-    font-weight: 700;
+    font-size: 20px !important;
+    font-weight: 600;
     color: var(--paper) !important;
-    letter-spacing: -0.5px;
-    margin-bottom: 12px !important;
+    letter-spacing: 1px;
+    margin-bottom: 8px !important;
+    text-transform: uppercase;
   }
 
   .manifesto-close {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 20px !important;
-    font-weight: 600;
+    font-size: 17px !important;
+    font-weight: 500;
     color: var(--gold) !important;
     -webkit-text-fill-color: var(--gold);
-    margin-top: 32px !important;
+    margin-top: 28px !important;
+    letter-spacing: 0.5px;
+    font-style: italic;
   }
 
   /* ── Deliverables ── */
@@ -600,6 +798,20 @@
     background: var(--gold);
   }
 
+  /* ── Devices Mockup ── */
+  .devices-break {
+    padding: 40px 0;
+    background: #000000;
+  }
+
+  .devices-img {
+    max-width: 600px;
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
+  }
+
   /* ── Pricing ── */
   .pricing {
     padding: 80px 0 100px;
@@ -658,28 +870,118 @@
     margin-bottom: 32px;
   }
 
-  .pricing-features {
+  .pricing-stack {
     text-align: left;
-    max-width: 340px;
-    margin: 0 auto 36px;
+    max-width: 420px;
+    margin: 0 auto 28px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
   }
 
-  .pricing-feature {
+  .stack-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+  }
+
+  .stack-arrow {
+    color: var(--gold);
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 15px;
-    color: rgba(242,237,232,0.85);
+    justify-content: center;
+    font-size: 11px;
   }
 
-  .pricing-feature svg {
+  .stack-item:last-child {
+    border-bottom: none;
+  }
+
+  .stack-name {
+    font-size: 14px;
+    color: rgba(242,237,232,0.75);
+    flex: 1;
+  }
+
+  .stack-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--smoke);
     flex-shrink: 0;
-    width: 16px;
-    height: 16px;
+  }
+
+  .stack-bonus {
+    padding-top: 14px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .stack-bonus .stack-name {
     color: var(--gold);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bonus-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+  }
+
+  .bonus-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .stack-bonus .stack-price {
+    color: var(--gold);
+  }
+
+  .pricing-totals {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .pricing-old {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--smoke);
+    margin-bottom: 8px;
+  }
+
+  .pricing-old span {
+    color: #CC4444;
+    font-weight: 600;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #CC4444;
+  }
+
+  .pricing-new {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: #6BCB77;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
   }
 
   .pricing .cta-btn {
@@ -694,7 +996,68 @@
     color: var(--smoke);
   }
 
-  /* ── Para Quem ── */
+  .payment-badges {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .badge {
+    width: 40px;
+    height: 26px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .badge-mc {
+    background: #f0f0f0;
+    position: relative;
+  }
+
+  .mc-left, .mc-right {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .mc-left {
+    background: #EB001B;
+    left: 9px;
+  }
+
+  .mc-right {
+    background: #F79E1B;
+    right: 9px;
+  }
+
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .lock-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--gold);
+  }
+
+  .secure-badge span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Para Quem (FAQ Accordion) ── */
   .para-quem {
     padding: 80px 0 100px;
     background: linear-gradient(180deg, var(--ink) 0%, var(--wine-deep) 40%, var(--wine-deep) 60%, var(--ink) 100%);
@@ -710,35 +1073,67 @@
     text-align: center;
   }
 
-  .para-quem-list {
+  .faq-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    max-width: 560px;
+    gap: 10px;
+    max-width: 600px;
     margin: 0 auto;
   }
 
-  .para-quem-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 18px 20px;
+  .faq-item {
     background: var(--charcoal);
     border-radius: 10px;
     border: 1px solid rgba(201,168,76,0.1);
     box-shadow: 0 2px 16px rgba(201,168,76,0.03);
+    overflow: hidden;
+    transition: border-color 0.3s;
   }
 
-  .para-quem-check {
+  .faq-item[open] {
+    border-color: rgba(201,168,76,0.25);
+  }
+
+  .faq-item summary {
+    padding: 18px 22px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--paper);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    transition: color 0.2s;
+  }
+
+  .faq-item summary::-webkit-details-marker { display: none; }
+
+  .faq-item summary::after {
+    content: '+';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--gold);
     flex-shrink: 0;
-    font-size: 18px;
-    line-height: 1.5;
+    transition: transform 0.3s;
   }
 
-  .para-quem-item p {
-    font-size: 16px;
-    color: rgba(242,237,232,0.85);
-    line-height: 1.6;
+  .faq-item[open] summary::after {
+    content: '−';
+  }
+
+  .faq-item summary:hover {
+    color: var(--gold);
+  }
+
+  .faq-item p {
+    padding: 0 22px 20px;
+    font-size: 15px;
+    color: var(--smoke);
+    line-height: 1.7;
   }
 
   /* ── Footer ── */
@@ -769,8 +1164,11 @@
 
 <!-- Nav -->
 <nav>
+  <div class="nav-timer">
+    <span class="timer-label">VAGAS LIMITADAS</span>
+    <span class="timer-countdown" id="countdown">15:00</span>
+  </div>
   <div class="logo">TATUA <span class="gradient-text">CLUB</span></div>
-  <a href="#investimento" class="nav-cta">Garantir Vaga</a>
 </nav>
 
 <!-- Hero -->
@@ -784,7 +1182,7 @@
     <p class="hero-sub">
       Dentro de <strong>uma semana</strong>, vou te ajudar a se tornar um <strong>tatuador profissional</strong>. Com 12 anos de carreira vivendo da tatuagem, vou te dar o norte que faltou pra você se tornar um profissional — e te ajudar a <strong>viver da arte, não a sobreviver</strong>. Uma semana de mentoria com todo o suporte pra sua evolução profissional.
     </p>
-    <a href="#investimento" class="cta-btn">Quero Minha Vaga →</a>
+    <a href="https://pay.kirvano.com/50c3c463-6073-4ddb-9197-14b0fac78590" class="cta-btn">Quero Minha Vaga →</a>
     <p class="hero-slots">Apenas <strong>10 vagas</strong> por turma</p>
   </div>
 </section>
@@ -852,37 +1250,72 @@
 
 <hr class="divider">
 
-<!-- Pain Points -->
-<section class="pain">
+<!-- Diagnóstico Interativo -->
+<section class="pain" id="diagnostico">
   <div class="container">
     <p class="section-label">Diagnóstico</p>
     <h2>Você se reconhece<br>em alguma dessas?</h2>
-    <div class="pain-list">
-      <div class="pain-item">
-        <svg class="pain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <p>Tatua, mas <strong>ninguém aparece</strong>. Seu Instagram parece invisível e você não sabe o que mudar.</p>
+    <p class="quiz-subtitle">Toque em pelo menos 3 situações que fazem parte da sua realidade.</p>
+
+    <div class="quiz-list" id="quizList">
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Tenho dificuldade para conseguir clientes.</p>
+        <span class="quiz-check"></span>
       </div>
-      <div class="pain-item">
-        <svg class="pain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <p>Perde horas tentando criar artes do zero, sem referência, sem saber se o cliente vai gostar.</p>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Meu Instagram não transmite profissionalismo.</p>
+        <span class="quiz-check"></span>
       </div>
-      <div class="pain-item">
-        <svg class="pain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <p>Vê outros tatuadores lotados de agenda e não entende o que eles fazem de diferente.</p>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Perco horas criando uma única arte.</p>
+        <span class="quiz-check"></span>
       </div>
-      <div class="pain-item">
-        <svg class="pain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <p>Já comprou curso gravado, assistiu tudo, mas continuou sem saber o próximo passo.</p>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Não sei quanto cobrar pelas minhas tatuagens.</p>
+        <span class="quiz-check"></span>
       </div>
-      <div class="pain-item">
-        <svg class="pain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <p>Sempre teve vontade de tatuar, mas <strong>nunca deu o primeiro passo</strong>. Não sabe por onde começar nem o que precisa pra entrar nesse mercado.</p>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Tenho medo de começar a tatuar.</p>
+        <span class="quiz-check"></span>
       </div>
-      <div class="pain-item">
-        <svg class="pain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <p>Já tatuou no passado, <strong>parou por alguma circunstância da vida</strong> e agora quer recomeçar — mas não sabe como voltar.</p>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Já tatuo, mas sinto que estou estagnado.</p>
+        <span class="quiz-check"></span>
+      </div>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Não sei divulgar meu trabalho.</p>
+        <span class="quiz-check"></span>
+      </div>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Já comprei cursos, mas continuo perdido.</p>
+        <span class="quiz-check"></span>
+      </div>
+      <div class="quiz-item" onclick="toggleQuiz(this)">
+        <p>Quero viver da tatuagem, mas ainda não consigo viver apenas dela.</p>
+        <span class="quiz-check"></span>
       </div>
     </div>
+
+    <p class="quiz-counter" id="quizCounter">Você marcou <strong>0</strong> de 9 situações.</p>
+
+    <div class="quiz-hint" id="quizHint">
+      <p>Marque pelo menos 3 situações para descobrir seu diagnóstico.</p>
+    </div>
+
+    <div class="quiz-result" id="quizResult">
+      <h3>Seu diagnóstico</h3>
+      <p>Você marcou três ou mais situações.</p>
+      <p>Isso significa que provavelmente o problema <strong>não é falta de talento.</strong></p>
+      <p>O que está faltando é um <strong>método claro, direção e acompanhamento.</strong></p>
+      <p>Foi exatamente por isso que o <strong>Tatua Club</strong> foi criado: para acelerar sua evolução como tatuador e mostrar um caminho que normalmente leva anos para descobrir sozinho.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Art Diferencial -->
+<section class="art-diferencial">
+  <div class="container" style="text-align:center;">
+    <img src="data:image/jpeg;base64,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" alt="Arte e Inteligência Artificial" class="art-diferencial-img">
   </div>
 </section>
 
@@ -892,30 +1325,30 @@
 <section class="ai-section">
   <div class="container">
     <p class="section-label">O Diferencial</p>
-    <h2>Enquanto outros têm <span class="gradient-text">medo de IA</span>,<br>você vai usar a seu favor.</h2>
+    <h2>O método que mudou a forma<br>como <span class="gradient-text">crio minhas artes.</span></h2>
     <p class="subtitle">
-      A IA não substitui seu traço — ela acelera tudo. Quem aprende a usar agora sai na frente de 95% dos tatuadores.
+      Aprenda um método que reduz horas de criação para minutos e saia na frente da maioria dos tatuadores.
     </p>
     <div class="ai-grid">
       <div class="ai-card">
-        <span class="ai-card-icon">🎨</span>
+        <span class="ai-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
         <h3>Criação de Artes</h3>
-        <p>Gere referências e variações em segundos. O cliente descreve o que quer, a IA cria a base, e você adapta com seu traço.</p>
+        <p>Gere referências e variações em segundos. Transforme qualquer ideia do cliente em referências visuais em minutos. Descubra um processo que acelera sua criatividade.</p>
       </div>
       <div class="ai-card">
-        <span class="ai-card-icon">📸</span>
+        <span class="ai-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
         <h3>Foto de Perfil Pro</h3>
         <p>Transforme uma selfie em uma foto profissional que transmite autoridade e confiança para o cliente.</p>
       </div>
       <div class="ai-card">
-        <span class="ai-card-icon">📱</span>
+        <span class="ai-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
         <h3>Conteúdo pra Instagram</h3>
-        <p>Legendas, ideias de posts e roteiros de Reels criados com IA — pra você postar com consistência sem travar.</p>
+        <p>Descubra qual é um dos maiores fatores para acelerar a carreira de um tatuador.</p>
       </div>
       <div class="ai-card">
-        <span class="ai-card-icon">💬</span>
+        <span class="ai-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
         <h3>Atendimento ao Cliente</h3>
-        <p>Scripts prontos pra transformar o "quanto custa?" em agendamento. Respostas profissionais em segundos.</p>
+        <p>Scripts prontos pra transformar o "quanto custa?" em agendamento.</p>
       </div>
     </div>
   </div>
@@ -928,36 +1361,69 @@
   <div class="container">
     <div class="pricing-card">
       <p class="pricing-label">Investimento</p>
-      <p class="pricing-value">
-        <span>R$</span>297
-      </p>
-      <p class="pricing-desc">Pagamento único · Acesso à turma completa</p>
 
-      <div class="pricing-features">
-        <div class="pricing-feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          7 dias de acompanhamento
+      <div class="pricing-stack">
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Mentoria ao vivo (3 encontros)</span>
+          <span class="stack-price">R$ 397</span>
         </div>
-        <div class="pricing-feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          3 aulas ao vivo com mentoria
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">7 dias de acompanhamento pelo WhatsApp</span>
+          <span class="stack-price">R$ 197</span>
         </div>
-        <div class="pricing-feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Grupo exclusivo no WhatsApp
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Análise individual do Instagram e posicionamento</span>
+          <span class="stack-price">R$ 247</span>
         </div>
-        <div class="pricing-feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Treinamento prático com IA
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Método de criação acelerada de artes</span>
+          <span class="stack-price">R$ 297</span>
         </div>
-        <div class="pricing-feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Análise individual do seu perfil
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Método para produção de conteúdo no Instagram</span>
+          <span class="stack-price">R$ 197</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Estratégias de atendimento e fechamento de clientes</span>
+          <span class="stack-price">R$ 197</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Marketing para tatuadores</span>
+          <span class="stack-price">R$ 497</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-arrow">✓</span><span class="stack-name">Plano de ação personalizado</span>
+          <span class="stack-price">R$ 147</span>
+        </div>
+        <div class="stack-item stack-bonus">
+          <span class="stack-arrow">✓</span><span class="stack-name"><span class="bonus-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><rect x="3" y="12" width="18" height="8" rx="1"/><line x1="12" y1="8" x2="12" y2="20"/><path d="M12 8c-2-3-6-3-6 0s4 0 6 0c2-3 6-3 6 0s-4 0-6 0"/></svg></span> 1 Mentoria Individual</span>
+          <span class="stack-price">R$ 397</span>
         </div>
       </div>
 
+      <div class="pricing-totals">
+        <p class="pricing-old">Valor total: <span>R$ 2.573</span></p>
+        <p class="pricing-new">Por apenas</p>
+        <p class="pricing-value">
+          <span>R$</span>297
+        </p>
+      </div>
+
+
+
       <a href="https://pay.kirvano.com/50c3c463-6073-4ddb-9197-14b0fac78590" class="cta-btn">Garantir Minha Vaga →</a>
-      <p class="pricing-note">Apenas 10 vagas por turma</p>
+      <p class="pricing-note"><p class="pricing-note">em até 12x</p>
+
+      <div class="payment-badges">
+        <div class="badge" style="background:#f2f2f2;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13.4 4.6a2 2 0 00-2.8 0L7 8.2l3.4 3.4-3.4 3.4 3.6 3.6a2 2 0 002.8 0L17 15l-3.4-3.4L17 8.2l-3.6-3.6z" fill="#32BCAD"/><path d="M7 8.2L4.6 10.6a2 2 0 000 2.8L7 15.8l3.4-3.4L7 8.2z" fill="#32BCAD"/><path d="M17 8.2l-3.4 3.4L17 15l2.4-2.4a2 2 0 000-2.8L17 8.2z" fill="#32BCAD"/></svg></div>
+        <div class="badge" style="background:#1A1F71;"><span style="font-size:8px;font-weight:900;color:white;letter-spacing:1px;">VISA</span></div>
+        <div class="badge badge-mc"><span class="mc-left"></span><span class="mc-right"></span></div>
+        <div class="badge" style="background:#1D1D1B;"><span style="font-size:8px;font-weight:700;color:#FFCB05;font-style:italic;">elo</span></div>
+      </div>
+      <div class="secure-badge">
+        <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>Compra 100% segura</span>
+      </div>
     </div>
   </div>
 </section>
@@ -968,41 +1434,12 @@
 <section class="deliver">
   <div class="container">
     <p class="section-label" style="text-align:center">O que você recebe</p>
-    <h2>Tudo que está incluso<br>na mentoria</h2>
+    <h2>Acompanhamento durante<br>toda a semana</h2>
     <div class="deliver-list">
-      <div class="deliver-item">
-        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="deliver-item" style="justify-content:center; text-align:center;">
         <div>
           <h3>Lives ao vivo com mentoria direta</h3>
-          <p>2 a 3 encontros ao vivo durante a semana. Você tira dúvidas, mostra seu trabalho e recebe direcionamento em tempo real.</p>
-        </div>
-      </div>
-      <div class="deliver-item">
-        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div>
-          <h3>Grupo exclusivo no WhatsApp</h3>
-          <p>Suporte direto durante toda a semana. Pergunte, compartilhe e receba feedback rápido entre as lives.</p>
-        </div>
-      </div>
-      <div class="deliver-item">
-        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div>
-          <h3>Análise personalizada do seu perfil</h3>
-          <p>Seu Instagram e portfólio analisados individualmente. Você sai sabendo exatamente o que ajustar.</p>
-        </div>
-      </div>
-      <div class="deliver-item">
-        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div>
-          <h3>Treinamento prático com IA</h3>
-          <p>Aprenda a usar ferramentas de inteligência artificial pra criar artes, fotos profissionais e conteúdo pro seu perfil.</p>
-        </div>
-      </div>
-      <div class="deliver-item">
-        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div>
-          <h3>Script de atendimento e fechamento</h3>
-          <p>Modelos prontos de mensagens pra responder orçamentos e converter curiosos em clientes agendados.</p>
+          <p>Uma metodologia dividida em 3 encontros ao vivo. Cada aula foi planejada para resolver uma etapa essencial da carreira de um tatuador.</p>
         </div>
       </div>
     </div>
@@ -1028,15 +1465,12 @@
         <div class="aula-body">
           <p class="aula-label">O que vamos fazer:</p>
           <ul class="aula-list">
-            <li>Conhecer sua história, seus objetivos e seu momento na tatuagem</li>
-            <li>Diagnóstico individual</li>
-            <li>Identificar o que está travando sua evolução</li>
-            <li>Os erros que impedem seu crescimento</li>
-            <li>Como se posicionar como um tatuador profissional</li>
-            <li>Estrutura de um perfil que transmite confiança</li>
-            <li>Fotografia profissional das suas tatuagens</li>
-            <li>Organização do Instagram</li>
-            <li>Como construir sua identidade como artista</li>
+            <li>Conhecer sua história, seus objetivos e seu momento na tatuagem.</li>
+            <li>Diagnóstico individual do seu Instagram, portfólio e dos pontos que estão travando sua evolução.</li>
+            <li>Os principais erros que impedem o crescimento de um tatuador.</li>
+            <li>Como construir uma identidade forte e se posicionar como um profissional.</li>
+            <li>Como estruturar um Instagram que transmite confiança e atrai clientes.</li>
+            <li>Fotografia profissional para valorizar suas tatuagens.</li>
           </ul>
         </div>
       </div>
@@ -1050,13 +1484,12 @@
         <div class="aula-body">
           <p class="aula-label">O que vamos aprender:</p>
           <ul class="aula-list">
-            <li>Como montar um portfólio que gera confiança</li>
-            <li>Como apresentar seus projetos aos clientes</li>
-            <li>Como criar projetos utilizando apenas o celular (mesmo sem iPad)</li>
-            <li>Atendimento que gera valor</li>
-            <li>Como responder orçamentos</li>
-            <li>Como definir preços de forma estratégica</li>
-            <li>Como fechar mais clientes</li>
+            <li>Estrutura de um portfólio que transmite confiança e aumenta suas conversões.</li>
+            <li>Apresentação de projetos que encanta o cliente antes mesmo da tatuagem.</li>
+            <li>Criação de artes profissionais utilizando apenas o celular (mesmo sem iPad).</li>
+            <li>Um método de atendimento que gera valor e aumenta suas chances de fechamento.</li>
+            <li>Estratégias de precificação para cobrar o valor justo sem perder clientes.</li>
+            <li>Técnicas para aumentar sua taxa de fechamento de orçamentos.</li>
           </ul>
         </div>
       </div>
@@ -1070,12 +1503,11 @@
         <div class="aula-body">
           <p class="aula-label">O que vamos fazer:</p>
           <ul class="aula-list">
-            <li>Análise das principais dificuldades de cada aluno</li>
-            <li>Feedback personalizado sobre sua evolução</li>
-            <li>Ferramentas para acelerar sua produtividade (incluindo IA)</li>
-            <li>Como utilizar IA para otimizar seu processo criativo</li>
-            <li>Introdução ao Marketing Digital para tatuadores</li>
-            <li>Próximos passos para continuar crescendo como tatuador profissional</li>
+            <li>Análise individual da sua evolução e dos pontos que ainda precisam de ajustes.</li>
+            <li>Feedback personalizado com orientações práticas para sua próxima etapa.</li>
+            <li>Métodos e ferramentas para acelerar seu processo criativo e aumentar sua produtividade.</li>
+            <li>Fundamentos de marketing para atrair mais clientes e fortalecer sua presença no mercado.</li>
+            <li>Plano de ação personalizado para continuar evoluindo após a mentoria.</li>
           </ul>
         </div>
       </div>
@@ -1089,35 +1521,49 @@
 <!-- Para quem é -->
 <section class="para-quem">
   <div class="container">
-    <h2>Para quem é esta mentoria?</h2>
-    <div class="para-quem-list">
-      <div class="para-quem-item">
-        <span class="para-quem-check">✅</span>
-        <p>Para quem sonha em se tornar tatuador, mas ainda não sabe por onde começar.</p>
-      </div>
-      <div class="para-quem-item">
-        <span class="para-quem-check">✅</span>
-        <p>Para quem já comprou uma máquina, mas ainda não teve confiança para começar a tatuar.</p>
-      </div>
-      <div class="para-quem-item">
-        <span class="para-quem-check">✅</span>
-        <p>Para quem já tatua, mas sente que está travado na evolução.</p>
-      </div>
-      <div class="para-quem-item">
-        <span class="para-quem-check">✅</span>
-        <p>Para quem quer construir um perfil profissional e conquistar mais clientes.</p>
-      </div>
-      <div class="para-quem-item">
-        <span class="para-quem-check">✅</span>
-        <p>Para quem deseja transformar a tatuagem em uma profissão e não apenas em um hobby.</p>
-      </div>
-      <div class="para-quem-item">
-        <span class="para-quem-check">✅</span>
-        <p>Para quem está cansado de tentar aprender sozinho e quer um acompanhamento de verdade.</p>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top:40px;">
-      <a href="#investimento" class="cta-btn">Quero Minha Vaga →</a>
+    <h2>Essa mentoria é para você?</h2>
+    <div class="faq-list">
+
+      <details class="faq-item">
+        <summary>Ainda não comecei a tatuar. Essa mentoria é para mim?</summary>
+        <p>Sim. A mentoria foi criada justamente para quem quer entrar na profissão com o caminho certo, evitando os erros que fazem muitos iniciantes desistirem.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Já comprei meus equipamentos, mas ainda não tive coragem de tatuar.</summary>
+        <p>Você vai entender o que realmente precisa para começar com segurança, desenvolver confiança e dar os primeiros passos sem ficar preso ao medo.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Já tatuo, mas sinto que minha evolução parou.</summary>
+        <p>Se você já atende clientes, mas sente que está estagnado, vamos identificar exatamente o que está impedindo seu crescimento e criar um plano para evoluir mais rápido.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Tenho dificuldade para conseguir clientes.</summary>
+        <p>Você aprenderá estratégias de posicionamento, Instagram, marketing e atendimento para atrair mais pessoas e aumentar seus agendamentos.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Quero viver da tatuagem e transformar isso em uma profissão.</summary>
+        <p>A mentoria mostra como construir uma carreira sólida, fortalecer sua autoridade e criar um negócio que gere resultados de forma consistente.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Já tentei aprender sozinho, mas continuo perdido.</summary>
+        <p>Aprender sozinho leva tempo e gera muitas dúvidas. Aqui você recebe acompanhamento, feedback e direcionamento para saber exatamente qual é o próximo passo.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Preciso saber desenhar bem?</summary>
+        <p>Não. O mais importante é entender o processo de criação, composição e evolução. O desenho melhora com prática e você terá métodos que aceleram esse desenvolvimento.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Preciso ter iPad ou equipamentos caros?</summary>
+        <p>Não. Grande parte do conteúdo pode ser aplicada utilizando apenas o celular e os equipamentos básicos para começar.</p>
+      </details>
+
     </div>
   </div>
 </section>
@@ -1128,6 +1574,54 @@
     <p>© 2026 · TATUA CLUB</p>
   </div>
 </footer>
+
+<script>
+// Quiz interativo
+function toggleQuiz(el) {
+  el.classList.toggle('active');
+  updateQuiz();
+}
+
+function updateQuiz() {
+  const items = document.querySelectorAll('.quiz-item.active');
+  const count = items.length;
+  document.getElementById('quizCounter').innerHTML = 'Você marcou <strong>' + count + '</strong> de 9 situações.';
+  
+  const hint = document.getElementById('quizHint');
+  const result = document.getElementById('quizResult');
+  
+  if (count >= 3) {
+    hint.style.display = 'none';
+    result.classList.add('visible');
+  } else {
+    hint.style.display = 'block';
+    result.classList.remove('visible');
+  }
+}
+</script>
+
+<script>
+(function() {
+  let totalSeconds = 15 * 60;
+  const countdownEl = document.getElementById('countdown');
+
+  function update() {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    countdownEl.textContent = 
+      String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+    if (totalSeconds <= 0) {
+      countdownEl.textContent = '00:00';
+      clearInterval(timer);
+    }
+    totalSeconds--;
+  }
+
+  update();
+  const timer = setInterval(update, 1000);
+})();
+</script>
 
 </body>
 </html>
